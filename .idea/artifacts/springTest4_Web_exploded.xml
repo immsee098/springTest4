@@ -55,6 +55,11 @@
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.0.1" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.0.1" />
           <element id="library" level="project" name="Maven: net.coobird:thumbnailator:0.4.8" />
+          <element id="library" level="project" name="Maven: com.mchange:c3p0:0.9.5.2" />
+          <element id="library" level="project" name="Maven: com.mchange:mchange-commons-java:0.2.11" />
+          <element id="library" level="project" name="Maven: com.zaxxer:HikariCP-java6:2.3.13" />
+          <element id="library" level="project" name="Maven: org.quartz-scheduler:quartz-jobs:2.3.0" />
+          <element id="library" level="project" name="Maven: org.quartz-scheduler:quartz:2.3.0" />
         </element>
       </element>
     </root>
