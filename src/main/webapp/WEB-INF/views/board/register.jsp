@@ -55,7 +55,7 @@
             <!-- /.panel-heading-->
             <div class="panel-body">
                 <div class="form-group uploadDiv">
-                    <input type="file" name="uploadFile" multiple>
+                    <input type="file" name="uploadFile[]" multiple>
                 </div>
 
                 <div class="uploadResult">
