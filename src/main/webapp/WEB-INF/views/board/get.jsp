@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../includes/header.jsp"%>
 
 
@@ -87,7 +88,13 @@
                     <label>Writer</label><input class="form-control" name="writer" value='<c:out value="${board.writer}"/>' readonly="readonly">
                 </div>
 
-                <button data-oper="modify" class="btn btn-default">Modify</button>
+                <sec:authentication property="principal" var="pinfo" />
+                    <sec:authorize access="isAuthenticated()">
+                        <c:if test="${pinfo.username eq board.writer}">
+                            <button data-oper="modify" class="btn btn-default">Modify</button>
+                        </c:if>
+                    </sec:authorize>
+
                 <button data-oper="list" class="btn btn-info"
                         onclick="location.href='/board/list'">List</button>
 
@@ -139,7 +146,9 @@
             <!-- /.panel-heading -->
             <div class="panel-heading">
                 <i class="fa fa-comments fa-fw"></i> Reply
-                <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+                <sec:authorize access="isAuthenticated()">
+                    <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+                </sec:authorize>
             </div> <!-- ./panel-heading -->
 
             <div class="panel-body">
@@ -331,8 +340,22 @@
         var modalRegisterBtn = $("#modalRegisterBtn");
         var modalCloseBtn = $("#modalCloseBtn");
 
+        var replyer = null;
+
+        <sec:authorize access="isAuthenticated()">
+            replyer='<sec:authentication property="principal.username" />';
+        </sec:authorize>
+
+        var csrfHeaderName = "${_csrf.headerName}";
+        var csrfTokenValue = "${_csrf.token}";
+
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+        })
+
         $("#addReplyBtn").on("click", function (e) {
             modal.find("input").val("");
+            modal.find("input[name='replyer']").val(replyer);
             modalInputReplyDate.closest("div").hide();
             modal.find("button[id !='modalCloseBtn']").hide();
 
@@ -374,7 +397,28 @@
         })
 
         modalModBtn.on("click", function (e) {
-            var reply = {rno:modal.data("rno"), reply: modalInputReply.val()};
+
+            var originalReplyer = modalInputReplyer.val();
+
+            var reply = {
+                rno: modal.data("rno"),
+                reply: modalInputReply.val(),
+                replyer: originalReplyer
+            };
+
+            if(!replyer){
+                alert("로그인 후 수정이 가능합니다.");
+                modal.modal("hide");
+                return;
+            }
+
+            console.log("Original Replyer : " + originalReplyer);
+
+            if(replyer != originalReplyer){
+                alert("자신이 쓴 댓글만 수정이 가능합니다.");
+                modal.modal("hide");
+                return;
+            }
 
             replyService.update(reply, function (result) {
                 alert(result);
@@ -392,7 +436,23 @@
 
         modalRemoveBtn.on("click", function (e) {
             var rno = modal.data("rno");
-            console.log("a");
+
+            if(!replyer){
+                alert("로그인 후 삭제가 가능합니다.");
+                modal.modal("hide");
+                return;
+            }
+
+            var originalReplyer = modalInputReplyer.val();
+
+            console.log("Original Replyer:" + originalReplyer); //댓글의 원래 작성자
+
+            if(replyer != originalReplyer) {
+                alert("자신이 작성한 댓글만 삭제가 가능합니다.");
+                modal.modal("hide");
+                return;
+            }
+
             replyService.remove(rno, function (result) {
                 console.log("b")
                 alert(result);

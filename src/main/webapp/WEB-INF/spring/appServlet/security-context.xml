@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
-    <bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>
+<!--    <bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>-->
 <!--    <bean id="customPasswordEncoder" class="org.zerock.security.CustomNoOpPasswordEncoder"></bean>-->
     <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
     <bean id="customUserDetailsService" class="org.zerock.security.CustomUserDetailsService"></bean>
@@ -35,10 +35,11 @@
         <security:intercept-url pattern="/sample/all" access="permitAll" />
         <security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')"></security:intercept-url>
         <security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')"></security:intercept-url>
-        <security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />
+<!--        <security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />-->
+        <security:form-login login-page="/customLogin" />
         <security:logout logout-url="/customLogout" invalidate-session="true" />
         <!--        <security:access-denied-handler error-page="/accessError" />-->
-        <security:access-denied-handler ref="customAccessDenied"></security:access-denied-handler>
+<!--        <security:access-denied-handler ref="customAccessDenied"></security:access-denied-handler>-->
         <security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
         <security:logout logout-url="/customLogout" invalidate-session="true" delete-cookies="remember-me, JSESSION_ID" />
     </security:http>

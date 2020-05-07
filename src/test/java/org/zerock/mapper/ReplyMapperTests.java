@@ -52,7 +52,7 @@ public class ReplyMapperTests {
 
     @Test
     public void testDelete(){
-        Long targetRno = 1L;
+        Long targetRno = 2L;
 
         mapper.delete(Math.toIntExact(targetRno));
     }
